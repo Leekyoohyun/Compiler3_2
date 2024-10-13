@@ -30,7 +30,7 @@ WHITESPACE  [ \t]+
 
 <COMMENT>"(*"   { comment_depth++; }
 <COMMENT>.      { /*주석 내부 문자 무시 */ }
-<COMMENT>\n     { lineNo++ }
+<COMMENT>\n     { lineNo++; }
 <COMMENT>"*)"   { comment_depth--; if(comment_depth ==0) BEGIN(INITIAL); }
 
 <COMMENT><<EOF>>    { setErrMsg("EOF in comment"); exit(1); }
