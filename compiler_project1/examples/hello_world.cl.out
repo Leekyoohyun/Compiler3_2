@@ -1,0 +1,19 @@
+001:[CLASS] class
+001:[TYPE] Main
+001:[INHERITS] inherits
+001:[TYPE] IO
+001:[LBRACE] {
+002:[ID] main
+002:[LPAREN] (
+002:[RPAREN] )
+002:[COLON] :
+002:[TYPE] SELF_TYPE
+002:[LBRACE] {
+003:[ID] out_string
+003:[LPAREN] (
+003:[STRING] "Hello, World.\n"
+003:[RPAREN] )
+004:[RBRACE] }
+004:[SEMICOLON] ;
+005:[RBRACE] }
+005:[SEMICOLON] ;
