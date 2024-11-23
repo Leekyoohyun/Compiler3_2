@@ -1,0 +1,1 @@
+[Main][IO]{pal(s[String])[Bool](if (= s.length() 0) true (if (= s.length() 1) true (if (= s.substr(0 1) s.substr((- s.length() 1) 1)) pal(s.substr(1 (- s.length() 2))) false)))}{i[Int]}{main()[SELF_TYPE](i<-(~ 1) out_string("enter a string\n") (if pal(in_string()) out_string("that was a palindrome\n") out_string("that was not a palindrome\n")))}

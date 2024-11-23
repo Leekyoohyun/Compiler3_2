@@ -1,0 +1,1 @@
+[Main][IO]{newline()[Object]out_string("\n")}{prompt()[String](out_string("Enter a number>") in_string())}{main()[Object](let (z[A2I]<-(new A2I)) (while true (let (s[String]<-prompt()) (if (= s "stop") abort() (let (i[Int]<-z.a2i(s)) (let (news[String]<-z.i2a(i)) (out_int(i) newline() out_string(news) newline())))))))}

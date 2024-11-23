@@ -1,0 +1,8 @@
+[A]
+[B][C]
+[C][A]{x[Int]<-(~ 35)}{y[B]<-(new B)}{z[Str]<-"hello"}
+[D][C]{x[Int]<-(+ a (* b c))}{y[C]<-(new C)}{foo()[Bool]false}{bar(x[Int]y[Int]z[Int])[Bool](<= (- (+ x (* y z)) y) (- z y))}
+[E]{bar()[Bool](dummy.[Int]foo(1 2 3) dummy.foo(a b c) foo(x y z) bar())}
+[F]{foo()[Bool]((if (if x y<-1 z) a c) (while (< x 9) ((if (= x 3) y<-5 y<-7) z<-(* x y))))}
+[G]{bar()[Bool](let (x[Int]<-1 y[D]<-(new D) z[Bool]) (+ y.foo(1 2 3) 3))}
+[H]{foo()[Int](case (+ a (* b c))(x[Int]=>a y[Int]=>(+ a b) z[Int]=>(+ a (* b c))))}

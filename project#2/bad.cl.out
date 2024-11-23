@@ -1,0 +1,15 @@
+syntax error in line 9 at "int"
+syntax error in line 9 at "string"
+syntax error in line 11 at "int"
+syntax error in line 15 at "fi"
+syntax error in line 16 at "Double"
+syntax error in line 17 at "C"
+syntax error in line 19 at "Y"
+syntax error in line 20 at ","
+syntax error in line 24 at ":"
+syntax error in line 25 at ","
+syntax error in line 29 at "a"
+syntax error in line 33 at "inherts"
+syntax error in line 38 at ";"
+syntax error in line 40 (unexpected EOF)
+14 error(s) found

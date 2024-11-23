@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+for file in examples/*.cl; do
+	./cool_parser ${file} > ${file}.txt
+	if diff -w ${file}.out ${file}.txt > /dev/null 2>&1; then
+		echo ${file} "--> PASSED"
+		rm ${file}.txt
+	else
+		echo ${file} "--> FAILED"
+		diff ${file}.out ${file}.txt
+	fi
+done
