@@ -2,7 +2,7 @@
  * Copyright(c) 2020-2024 All rights reserved by Heekuck Oh.
  * 이 프로그램은 한양대학교 ERICA 컴퓨터학부 학생을 위한 교육용으로 제작되었다.
  * 한양대학교 ERICA 학생이 아닌 자는 이 프로그램을 수정하거나 배포할 수 없다.
- * 이규현 11/24 7:38
+ * 이규현 11/24 7:43
  */
 
 #include <stdio.h>
@@ -267,12 +267,47 @@ void free_feature_list(feature_list_t *list) {
         feature_list_t *next = list->next;
         free(list->feature->name);
         free(list->feature->type);
-        free_expr_list(list->feature->body);
+        if (list->feature->body) {
+            free(list->feature->body); // expr_t는 단일 객체이므로 free 호출
+        }
         free(list->feature);
         free(list);
         list = next;
     }
 }
+
+//미구현 함수 추가: _append_expr_list, _create_expr_list, _show_class_list
+expr_list_t *append_expr_list(expr_list_t *list, expr_t *expr) {
+    if (!list) return create_expr_list(expr);
+    expr_list_t *current = list;
+    while (current->next) current = current->next;
+    current->next = create_expr_list(expr);
+    return list;
+}
+
+expr_list_t *create_expr_list(expr_t *expr) {
+    expr_list_t *list = malloc(sizeof(expr_list_t));
+    if (!list) return NULL;
+    list->expr = expr;
+    list->next = NULL;
+    return list;
+}
+
+void show_class_list(class_list_t *class_list) {
+    class_list_t *current = class_list;
+    while (current) {
+        printf("Class: %s\n", current->class->type);
+        if (current->class->inherited)
+            printf("  Inherits: %s\n", current->class->inherited);
+        feature_list_t *feature = current->class->features;
+        while (feature) {
+            printf("  Feature: %s (%s)\n", feature->feature->name, feature->feature->type);
+            feature = feature->next;
+        }
+        current = current->next;
+    }
+}
+
 
 void free_expr_list(expr_list_t *list) {
     while (list) {
