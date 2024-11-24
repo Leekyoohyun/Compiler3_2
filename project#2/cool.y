@@ -53,7 +53,6 @@ void yyerror(const char *s);
 
 program:
     class_list {
-        printf("Parsing program...\n");
         program = $1;
     }
     ;
@@ -73,11 +72,6 @@ class:
     }
     | CLASS TYPE INHERITS TYPE '{' feature_list '}' ';' {
         $$ = create_class($2, $4, $6);
-    }
-    | error ';' {
-        yyerror("Error in class definition.");
-        yyerrok;
-        $$ = NULL;
     }
     ;
 
@@ -100,11 +94,6 @@ feature:
     | ID ':' TYPE ASSIGN expr {
         $$ = create_attribute($1, $3, $5);
     }
-    | error {
-        yyerror("Error in feature definition.");
-        yyerrok;
-        $$ = NULL;
-    }
     ;
 
 formal_list:
@@ -122,11 +111,6 @@ formal_list:
 formal:
     ID ':' TYPE {
         $$ = create_formal($1, $3);
-    }
-    | error {
-        yyerror("Error in formal parameter.");
-        yyerrok;
-        $$ = NULL;
     }
     ;
 
@@ -179,11 +163,6 @@ expr:
     | FALSE {
         $$ = create_bool_expr(false);
     }
-    | error ')' {
-        yyerror("Error before closing parenthesis.");
-        yyerrok;
-        $$ = NULL;
-    }
     ;
 
 expr_list:
@@ -192,9 +171,6 @@ expr_list:
     }
     | expr {
         $$ = create_expr_list($1);
-    }
-    | /* empty */ {
-        $$ = NULL;
     }
     ;
 
@@ -205,22 +181,14 @@ case_list:
     | ID ':' TYPE DARROW expr ';' {
         $$ = create_case_list(create_case($1, $3, $5));
     }
-    | error {
-        yyerror("Error in case list.");
-        yyerrok;
-        $$ = NULL;
-    }
     ;
+
 
 %%
 
 void yyerror(const char *s) {
     ++num_errors;
-    if (yychar > 0) {
-        fprintf(stderr, "Syntax error: %s at line %d near '%s'\n", s, yylineno, yytext);
-    } else {
-        fprintf(stderr, "Syntax error: %s at line %d (unexpected end of file)\n", s, yylineno);
-    }
+    fprintf(stderr, "Syntax error at line %d near '%s': %s\n", yylineno, yytext, s);
 }
 
 int main(int argc, char *argv[]) {

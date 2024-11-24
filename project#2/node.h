@@ -1,96 +1,122 @@
 /*
  * Copyright(c) 2020-2024 All rights reserved by Heekuck Oh.
  * 이 프로그램은 한양대학교 ERICA 컴퓨터학부 학생을 위한 교육용으로 제작되었다.
- * 한양대학교 ERICA 학생이 아닌 자는 이 프로그램을 수정하거나 배포할 수 없다.
- * 프로그램을 수정할 경우 날짜, 학과, 학번, 이름, 수정 내용을 기록한다.
  */
 #ifndef NODE_H
 #define NODE_H
 
 #include <stdbool.h>
 
-/* Expression 타입 정의 */
 typedef enum {
-    ASSIGN_EXPR, IF_EXPR, WHILE_EXPR, BLOCK_EXPR, LET_EXPR, CASE_EXPR,
-    NEW_EXPR, ISVOID_EXPR, NOT_EXPR, OBJECT_EXPR, INT_EXPR, STRING_EXPR, BOOL_EXPR
+    ASSIGN_EXPR,
+    IF_EXPR,
+    WHILE_EXPR,
+    BLOCK_EXPR,
+    LET_EXPR,
+    CASE_EXPR,
+    NEW_EXPR,
+    ISVOID_EXPR,
+    NOT_EXPR,
+    OBJECT_EXPR,
+    INT_EXPR,
+    STRING_EXPR,
+    BOOL_EXPR
 } expr_type_t;
 
-/* Expression 구조체 정의 */
+/* 표현식 구조체 정의 */
 typedef struct expr {
-    expr_type_t type;
+    expr_type_t type;  // 표현식 타입
     union {
-        struct { struct expr *condition, *then_branch, *else_branch; } if_expr;
-        struct { struct expr *condition, *body; } while_expr;
-        struct { struct expr_list *block_expr; } block_expr;
-        struct { char *id; struct expr *expr; } assign_expr; // 추가된 assign_expr 필드
+        struct { struct expr *condition, *then_branch, *else_branch; } if_expr;  // IF 표현식
+        struct { struct expr *condition, *body; } while_expr;                   // WHILE 표현식
+        struct { struct expr_list *block_expr; } block_expr;                    // BLOCK 표현식
+        struct { char *id; struct expr *expr; } assign_expr;                    // ASSIGN 표현식
+        struct { char *id; char *type; struct expr *init, *body; } let_expr;    // LET 표현식
+        struct { struct expr *expr; struct case_list *cases; } case_expr;       // CASE 표현식
+
+        // 새로 추가되는 표현식 필드
+        struct { struct expr *expr; } isvoid_expr;   // ISVOID 표현식
+        struct { struct expr *expr; } not_expr;      // NOT 표현식
     };
-    char *id;
-    int int_value;
-    char *string_value;
-    bool bool_value;
+
+    char *id;                // 일반 변수 이름
+    int int_value;           // 정수 값
+    char *string_value;      // 문자열 값
+    bool bool_value;         // Boolean 값
 } expr_t;
 
-/* Expression list */
+
+
+
+
+
+/* 표현식 리스트 구조체 */
 typedef struct expr_list {
     expr_t *expr;
     struct expr_list *next;
 } expr_list_t;
 
-/* Case 정의 */
-typedef struct case_t {
-    char *id;
-    char *type;
-    struct expr *expr;
-} case_t;
-
-typedef struct case_list_t {
-    case_t *case_expr;
-    struct case_list_t *next;
-} case_list_t;
-
-/* Class와 Feature 정의 */
-typedef struct feature {
-    char *name;
-    char *type;
-    struct formal_list *formals;
-    expr_t *body;
-} feature_t;
-
-typedef struct feature_list {
-    feature_t *feature;
-    struct feature_list *next;
-} feature_list_t;
-
+/* formal (매개변수) 구조체 */
 typedef struct formal {
     char *name;
     char *type;
 } formal_t;
 
+/* formal 리스트 구조체 */
 typedef struct formal_list {
     formal_t *formal;
     struct formal_list *next;
 } formal_list_t;
 
+/* feature 구조체 (메서드 or 속성) */
+typedef struct feature {
+    char *name;
+    char *type;
+    formal_list_t *formals;
+    expr_t *body;
+} feature_t;
+
+/* feature 리스트 구조체 */
+typedef struct feature_list {
+    feature_t *feature;
+    struct feature_list *next;
+} feature_list_t;
+
+/* 클래스 구조체 */
 typedef struct class {
     char *type;
     char *inherited;
     feature_list_t *features;
 } class_t;
 
+/* 클래스 리스트 구조체 */
 typedef struct class_list {
     class_t *class;
     struct class_list *next;
 } class_list_t;
 
-/* Function prototypes */
+/* case 구조체 */
+typedef struct case_t {
+    char *id;
+    char *type;
+    expr_t *expr;
+} case_t;
+
+
+/* case 리스트 구조체 */
+typedef struct case_list {
+    struct case_t *case_expr;  // 개별 case
+    struct case_list *next;    // 다음 case
+} case_list_t;
+
+
+/* 함수 프로토타입 선언 */
 class_list_t *create_class_list(class_t *class);
 class_list_t *append_class_list(class_list_t *list, class_t *class);
-
 class_t *create_class(char *type, char *inherited, feature_list_t *features);
 
 feature_list_t *create_feature_list(feature_t *feature);
 feature_list_t *append_feature_list(feature_list_t *list, feature_t *feature);
-
 feature_t *create_method(char *name, formal_list_t *formals, char *type, expr_t *body);
 feature_t *create_attribute(char *name, char *type, expr_t *init);
 
@@ -111,22 +137,20 @@ expr_t *create_object_expr(char *id);
 expr_t *create_int_expr(int value);
 expr_t *create_string_expr(char *value);
 expr_t *create_bool_expr(bool value);
+case_list_t *create_case_list(case_t *new_case);
 
-expr_list_t *create_expr_list(expr_t *expr); // 새 표현식 리스트 생성
-expr_list_t *append_expr_list(expr_list_t *list, expr_t *expr); // 표현식 추가
-
+expr_list_t *create_expr_list(expr_t *expr);
+expr_list_t *append_expr_list(expr_list_t *list, expr_t *expr);
 
 case_list_t *append_case_list(case_list_t *list, case_t *new_case);
-case_list_t *create_case_list(case_t *new_case);
+expr_t *create_case_expr(expr_t *expr, case_list_t *cases);
 case_t *create_case(char *id, char *type, expr_t *expr);
 
+void show_class_list(class_list_t *class_list);
 void free_class_list(class_list_t *list);
 void free_feature_list(feature_list_t *list);
 void free_formal_list(formal_list_t *list);
 void free_expr_list(expr_list_t *list);
+void free_case_list(case_list_t *list);
 
-void show_class_list(class_list_t *class_list); // 클래스 리스트 출력
-
-
-#endif
-
+#endif // NODE_H
