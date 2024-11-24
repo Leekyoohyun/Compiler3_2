@@ -1,9 +1,3 @@
-/*
- * Copyright(c) 2020-2024 All rights reserved by Heekuck Oh.
- * 이 프로그램은 한양대학교 ERICA 컴퓨터학부 학생을 위한 교육용으로 제작되었다.
- * 한양대학교 ERICA 학생이 아닌 자는 이 프로그램을 수정하거나 배포할 수 없다.
- * 프로그램을 수정할 경우 날짜, 학과, 학번, 이름, 수정 내용을 기록한다.
- */
 %option noinput nounput yylineno
 %{
 #include <stdio.h>
@@ -14,17 +8,16 @@
 #include "cool.tab.h"
 %}
 
-
 %x COMMENT
 %x S_LINE_COMMENT
 
 NEWLINE     (\r\n|\n)
 WHITESPACE  [ \t]+
-DASHCOMMENT --.*\n
+DASHCOMMENT --.*
 
 %%
 
-{WHITESPACE}    /* SKIP */
+{WHITESPACE}    /* skip */
 {NEWLINE}       /* skip */
 {DASHCOMMENT}   /* skip */
 
@@ -58,6 +51,7 @@ DASHCOMMENT --.*\n
 }
 
 [0-9]+    {
+    yylval.i = atoi(yytext); /* 정수 값 처리 */
     return INTEGER;
 }
 
@@ -65,7 +59,7 @@ DASHCOMMENT --.*\n
     /* 큰따옴표를 제외하고 문자열을 처리 */
     char *str = strdup(yytext + 1);  /* 처음 큰따옴표 제거하고 복사 */
     str[strlen(str) - 1] = '\0';  /* 마지막 큰따옴표 제거 */
-    free(str);  /* 할당된 메모리 해제 */
+    yylval.s = str;  /* 처리된 문자열 저장 */
     return STRING;
 }
 
@@ -88,7 +82,9 @@ DASHCOMMENT --.*\n
 "/"     { return '/'; }
 "~"     { return '~'; }
 "@"     { return '@'; }
-.       { fprintf(stderr, "Skip unknown character %s in line %d\n", yytext, yylineno); }
 
-%%%%
+. {
+    fprintf(stderr, "Skip unknown character '%s' in line %d\n", yytext, yylineno);
+}
+%%
 

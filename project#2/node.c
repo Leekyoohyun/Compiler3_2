@@ -20,7 +20,45 @@ char *strdup_safe(const char *src) {
     return dup;
 }
 
-/* Implementation of class list functions */
+case_t *create_case(char *id, char *type, expr_t *expr) {
+    case_t *case_expr = malloc(sizeof(case_t));
+    if (!case_expr) return NULL;
+    case_expr->id = strdup_safe(id);
+    case_expr->type = strdup_safe(type);
+    case_expr->expr = expr;
+    return case_expr;
+}
+
+expr_t *create_case_expr(expr_t *expr, case_list_t *cases) {
+    expr_t *case_expr = malloc(sizeof(expr_t));
+    if (!case_expr) return NULL;
+    case_expr->type = CASE_EXPR;
+    case_expr->block_expr.block_expr = (expr_list_t *)cases; // 적절히 연결
+    return case_expr;
+}
+
+case_list_t *create_case_list(case_t *new_case) {
+    case_list_t *list = malloc(sizeof(case_list_t));
+    if (!list) return NULL;
+    list->case_expr = new_case;
+    list->next = NULL;
+    return list;
+}
+
+expr_t *create_let_expr(char *id, char *type, expr_t *init, expr_t *body) {
+    expr_t *let_expr = malloc(sizeof(expr_t));
+    if (!let_expr) return NULL;
+    let_expr->type = LET_EXPR;
+    let_expr->id = strdup_safe(id);
+    let_expr->string_value = strdup_safe(type);
+    let_expr->int_value = (intptr_t)init;
+    let_expr->bool_value = (intptr_t)body;
+    return let_expr;
+}
+
+
+
+/* Class list functions */
 class_list_t *create_class_list(class_t *class) {
     class_list_t *list = malloc(sizeof(class_list_t));
     if (!list) return NULL;
@@ -37,17 +75,22 @@ class_list_t *append_class_list(class_list_t *list, class_t *class) {
     return list;
 }
 
-/* Implementation of class functions */
+/* Class functions */
 class_t *create_class(char *type, char *inherited, feature_list_t *features) {
+    if (type && inherited && strcmp(type, inherited) == 0) {
+        fprintf(stderr, "Error: Class %s cannot inherit itself.\n", type);
+        return NULL;
+    }
     class_t *new_class = malloc(sizeof(class_t));
     if (!new_class) return NULL;
     new_class->type = strdup_safe(type);
-    new_class->inherited = strdup_safe(inherited);
+    new_class->inherited = inherited ? strdup_safe(inherited) : NULL;
     new_class->features = features;
     return new_class;
 }
 
-/* Implementation of feature list functions */
+
+/* Feature list functions */
 feature_list_t *create_feature_list(feature_t *feature) {
     feature_list_t *list = malloc(sizeof(feature_list_t));
     if (!list) return NULL;
@@ -64,7 +107,7 @@ feature_list_t *append_feature_list(feature_list_t *list, feature_t *feature) {
     return list;
 }
 
-/* Implementation of feature functions */
+/* Feature functions */
 feature_t *create_method(char *name, formal_list_t *formals, char *type, expr_t *body) {
     feature_t *method = malloc(sizeof(feature_t));
     if (!method) return NULL;
@@ -80,12 +123,71 @@ feature_t *create_attribute(char *name, char *type, expr_t *init) {
     if (!attribute) return NULL;
     attribute->name = strdup_safe(name);
     attribute->type = strdup_safe(type);
-    attribute->formals = NULL;  // Attributes do not have formals
+    attribute->formals = NULL;
     attribute->body = init;
     return attribute;
 }
 
-/* Implementation of formal list functions */
+case_list_t *append_case_list(case_list_t *list, case_t *new_case) {
+    if (!list) return create_case_list(new_case);
+    case_list_t *current = list;
+    while (current->next) current = current->next;
+    current->next = create_case_list(new_case);
+    return list;
+}
+
+expr_t *create_int_expr(int value) {
+    expr_t *expr = malloc(sizeof(expr_t));
+    if (!expr) return NULL;
+    expr->type = INT_EXPR;
+    expr->int_value = value;
+    return expr;
+}
+
+expr_t *create_isvoid_expr(expr_t *expr) {
+    expr_t *isvoid_expr = malloc(sizeof(expr_t));
+    if (!isvoid_expr) return NULL;
+    isvoid_expr->type = ISVOID_EXPR;
+    isvoid_expr->int_value = (intptr_t)expr;
+    return isvoid_expr;
+}
+
+expr_t *create_new_expr(char *type) {
+    expr_t *new_expr = malloc(sizeof(expr_t));
+    if (!new_expr) return NULL;
+    new_expr->type = NEW_EXPR;
+    new_expr->string_value = strdup_safe(type);
+    return new_expr;
+}
+
+expr_t *create_not_expr(expr_t *expr) {
+    expr_t *not_expr = malloc(sizeof(expr_t));
+    if (!not_expr) return NULL;
+    not_expr->type = NOT_EXPR;
+    not_expr->int_value = (intptr_t)expr;
+    return not_expr;
+}
+
+expr_t *create_object_expr(char *id) {
+    expr_t *object_expr = malloc(sizeof(expr_t));
+    if (!object_expr) return NULL;
+    object_expr->type = OBJECT_EXPR;
+    object_expr->id = strdup_safe(id);
+    return object_expr;
+}
+
+expr_t *create_string_expr(char *value) {
+    expr_t *string_expr = malloc(sizeof(expr_t));
+    if (!string_expr) return NULL;
+    string_expr->type = STRING_EXPR;
+    string_expr->string_value = strdup_safe(value);
+    return string_expr;
+}
+
+
+
+
+/* Formal list functions */
 formal_list_t *create_formal_list(formal_t *formal) {
     formal_list_t *list = malloc(sizeof(formal_list_t));
     if (!list) return NULL;
@@ -110,15 +212,16 @@ formal_t *create_formal(char *name, char *type) {
     return formal;
 }
 
-/* Implementation of expression functions */
+/* Expression functions */
 expr_t *create_assign_expr(char *id, expr_t *expr) {
     expr_t *assignment = malloc(sizeof(expr_t));
     if (!assignment) return NULL;
     assignment->type = ASSIGN_EXPR;
     assignment->id = strdup_safe(id);
-    assignment->int_value = (intptr_t)expr;
+    assignment->assign_expr.expr = expr; // assign_expr 필드 사용
     return assignment;
 }
+
 
 expr_t *create_if_expr(expr_t *condition, expr_t *then_branch, expr_t *else_branch) {
     expr_t *if_expr = malloc(sizeof(expr_t));
@@ -139,6 +242,15 @@ expr_t *create_while_expr(expr_t *condition, expr_t *body) {
     return while_expr;
 }
 
+expr_t *create_bool_expr(bool value) {
+    expr_t *expr = malloc(sizeof(expr_t));
+    if (!expr) return NULL;
+    expr->type = BOOL_EXPR;
+    expr->bool_value = value;
+    return expr;
+}
+
+
 expr_t *create_block_expr(expr_list_t *block) {
     expr_t *block_expr = malloc(sizeof(expr_t));
     if (!block_expr) return NULL;
@@ -147,107 +259,30 @@ expr_t *create_block_expr(expr_list_t *block) {
     return block_expr;
 }
 
-expr_t *create_let_expr(char *id, char *type, expr_t *init, expr_t *body) {
-    expr_t *let_expr = malloc(sizeof(expr_t));
-    if (!let_expr) return NULL;
-    let_expr->type = BLOCK_EXPR;  // Reuse block_expr type for let
-    let_expr->id = strdup_safe(id);
-    let_expr->string_value = strdup_safe(type);
-    let_expr->int_value = (intptr_t)init;
-    let_expr->bool_value = (intptr_t)body;
-    return let_expr;
-}
-
-expr_t *create_case_expr(expr_t *expr, case_list_t *cases) {
-    expr_t *case_expr = malloc(sizeof(expr_t));
-    if (!case_expr) return NULL;
-    case_expr->type = CASE_EXPR;
-    case_expr->int_value = (intptr_t)expr;
-    case_expr->bool_value = (intptr_t)cases;
-    return case_expr;
-}
-
-expr_t *create_new_expr(char *type) {
-    expr_t *new_expr = malloc(sizeof(expr_t));
-    if (!new_expr) return NULL;
-    new_expr->type = NEW_EXPR;
-    new_expr->string_value = strdup_safe(type);
-    return new_expr;
-}
-
-expr_t *create_isvoid_expr(expr_t *expr) {
-    expr_t *isvoid_expr = malloc(sizeof(expr_t));
-    if (!isvoid_expr) return NULL;
-    isvoid_expr->type = ISVOID_EXPR;
-    isvoid_expr->int_value = (intptr_t)expr;
-    return isvoid_expr;
-}
-
-expr_t *create_not_expr(expr_t *expr) {
-    expr_t *not_expr = malloc(sizeof(expr_t));
-    if (!not_expr) return NULL;
-    not_expr->type = NOT_EXPR;
-    not_expr->int_value = (intptr_t)expr;
-    return not_expr;
-}
-
-expr_t *create_object_expr(char *id) {
-    expr_t *object_expr = malloc(sizeof(expr_t));
-    if (!object_expr) return NULL;
-    object_expr->type = OBJECT_EXPR;
-    object_expr->id = strdup_safe(id);
-    return object_expr;
-}
-
-expr_t *create_int_expr(int value) {
-    expr_t *int_expr = malloc(sizeof(expr_t));
-    if (!int_expr) return NULL;
-    int_expr->type = INT_EXPR;
-    int_expr->int_value = value;
-    return int_expr;
-}
-
-expr_t *create_string_expr(char *value) {
-    expr_t *string_expr = malloc(sizeof(expr_t));
-    if (!string_expr) return NULL;
-    string_expr->type = STRING_EXPR;
-    string_expr->string_value = strdup_safe(value);
-    return string_expr;
-}
-
-expr_t *create_bool_expr(bool value) {
-    expr_t *bool_expr = malloc(sizeof(expr_t));
-    if (!bool_expr) return NULL;
-    bool_expr->type = BOOL_EXPR;
-    bool_expr->bool_value = value;
-    return bool_expr;
-}
-
-/* Case list functions */
-case_list_t *append_case_list(case_list_t *list, case_t *new_case) {
-    if (!list) return create_case_list(new_case);
-    case_list_t *current = list;
-    while (current->next) current = current->next;
-    current->next = create_case_list(new_case);
-    return list;
-}
-
-case_list_t *create_case_list(case_t *new_case) {
-    case_list_t *list = malloc(sizeof(case_list_t));
+/* Expression list functions */
+expr_list_t *create_expr_list(expr_t *expr) {
+    expr_list_t *list = malloc(sizeof(expr_list_t));
     if (!list) return NULL;
-    list->case_expr = new_case;
+    list->expr = expr;
     list->next = NULL;
     return list;
 }
 
-case_t *create_case(char *id, char *type, expr_t *expr) {
-    case_t *case_expr = malloc(sizeof(case_t));
-    if (!case_expr) return NULL;
-    case_expr->id = strdup_safe(id);
-    case_expr->type = strdup_safe(type);
-    case_expr->expr = expr;
-    return case_expr;
+expr_list_t *append_expr_list(expr_list_t *list, expr_t *expr) {
+    if (!list) return create_expr_list(expr);
+    expr_list_t *current = list;
+    while (current->next) {
+        if (current == current->next) { // 무한 루프 방지
+            fprintf(stderr, "Error: Circular reference in expr_list detected.\n");
+            return NULL;
+        }
+        current = current->next;
+    }
+    current->next = create_expr_list(expr);
+    return list;
 }
+
+
 
 /* Memory cleanup functions */
 void free_class_list(class_list_t *list) {
@@ -267,47 +302,24 @@ void free_feature_list(feature_list_t *list) {
         feature_list_t *next = list->next;
         free(list->feature->name);
         free(list->feature->type);
-        if (list->feature->body) {
-            free(list->feature->body); // expr_t는 단일 객체이므로 free 호출
-        }
+        if (list->feature->formals) free_formal_list(list->feature->formals);
+        if (list->feature->body) free(list->feature->body);
         free(list->feature);
         free(list);
         list = next;
     }
 }
 
-//미구현 함수 추가: _append_expr_list, _create_expr_list, _show_class_list
-expr_list_t *append_expr_list(expr_list_t *list, expr_t *expr) {
-    if (!list) return create_expr_list(expr);
-    expr_list_t *current = list;
-    while (current->next) current = current->next;
-    current->next = create_expr_list(expr);
-    return list;
-}
-
-expr_list_t *create_expr_list(expr_t *expr) {
-    expr_list_t *list = malloc(sizeof(expr_list_t));
-    if (!list) return NULL;
-    list->expr = expr;
-    list->next = NULL;
-    return list;
-}
-
-void show_class_list(class_list_t *class_list) {
-    class_list_t *current = class_list;
-    while (current) {
-        printf("Class: %s\n", current->class->type);
-        if (current->class->inherited)
-            printf("  Inherits: %s\n", current->class->inherited);
-        feature_list_t *feature = current->class->features;
-        while (feature) {
-            printf("  Feature: %s (%s)\n", feature->feature->name, feature->feature->type);
-            feature = feature->next;
-        }
-        current = current->next;
+void free_formal_list(formal_list_t *list) {
+    while (list) {
+        formal_list_t *next = list->next;
+        free(list->formal->name);
+        free(list->formal->type);
+        free(list->formal);
+        free(list);
+        list = next;
     }
 }
-
 
 void free_expr_list(expr_list_t *list) {
     while (list) {
@@ -319,14 +331,15 @@ void free_expr_list(expr_list_t *list) {
     }
 }
 
-void free_case_list(case_list_t *list) {
-    while (list) {
-        case_list_t *next = list->next;
-        free(list->case_expr->id);
-        free(list->case_expr->type);
-        free_expr_list((expr_list_t *)list->case_expr->expr);
-        free(list->case_expr);
-        free(list);
-        list = next;
+void show_class_list(class_list_t *class_list) {
+    class_list_t *current = class_list;
+    while (current) {
+        if (current == current->next) { // 순환 참조 확인
+            fprintf(stderr, "Error: Circular reference in class_list detected.\n");
+            return;
+        }
+        printf("Class: %s\n", current->class->type);
+        current = current->next;
     }
 }
+

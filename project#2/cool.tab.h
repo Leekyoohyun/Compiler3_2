@@ -102,7 +102,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 22 "cool.y"
+#line 18 "cool.y"
 {
     class_t *class;
     class_list_t *class_list;
