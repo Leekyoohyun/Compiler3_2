@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 
+/* 표현식 타입 정의 */
 typedef enum {
     ASSIGN_EXPR,
     IF_EXPR,
@@ -23,32 +24,24 @@ typedef enum {
     BOOL_EXPR
 } expr_type_t;
 
-/* 표현식 구조체 정의 */
+/* 표현식 구조체 */
 typedef struct expr {
-    expr_type_t type;  // 표현식 타입
+    expr_type_t type;
     union {
-        struct { struct expr *condition, *then_branch, *else_branch; } if_expr;  // IF 표현식
-        struct { struct expr *condition, *body; } while_expr;                   // WHILE 표현식
-        struct { struct expr_list *block_expr; } block_expr;                    // BLOCK 표현식
-        struct { char *id; struct expr *expr; } assign_expr;                    // ASSIGN 표현식
-        struct { char *id; char *type; struct expr *init, *body; } let_expr;    // LET 표현식
-        struct { struct expr *expr; struct case_list *cases; } case_expr;       // CASE 표현식
-
-        // 새로 추가되는 표현식 필드
-        struct { struct expr *expr; } isvoid_expr;   // ISVOID 표현식
-        struct { struct expr *expr; } not_expr;      // NOT 표현식
+        struct { struct expr *condition, *then_branch, *else_branch; } if_expr;
+        struct { struct expr *condition, *body; } while_expr;
+        struct { struct expr_list *block_expr; } block_expr;
+        struct { char *id; struct expr *expr; } assign_expr;
+        struct { char *id; char *type; struct expr *init, *body; } let_expr;
+        struct { struct expr *expr; struct case_list *cases; } case_expr;
+        struct { struct expr *expr; } isvoid_expr;
+        struct { struct expr *expr; } not_expr;
     };
-
-    char *id;                // 일반 변수 이름
-    int int_value;           // 정수 값
-    char *string_value;      // 문자열 값
-    bool bool_value;         // Boolean 값
+    char *id;
+    int int_value;
+    char *string_value;
+    bool bool_value;
 } expr_t;
-
-
-
-
-
 
 /* 표현식 리스트 구조체 */
 typedef struct expr_list {
@@ -68,7 +61,7 @@ typedef struct formal_list {
     struct formal_list *next;
 } formal_list_t;
 
-/* feature 구조체 (메서드 or 속성) */
+/* feature 구조체 (메서드 또는 속성) */
 typedef struct feature {
     char *name;
     char *type;
@@ -102,13 +95,11 @@ typedef struct case_t {
     expr_t *expr;
 } case_t;
 
-
 /* case 리스트 구조체 */
 typedef struct case_list {
-    struct case_t *case_expr;  // 개별 case
-    struct case_list *next;    // 다음 case
+    struct case_t *case_expr;
+    struct case_list *next;
 } case_list_t;
-
 
 /* 함수 프로토타입 선언 */
 class_list_t *create_class_list(class_t *class);
@@ -137,20 +128,15 @@ expr_t *create_object_expr(char *id);
 expr_t *create_int_expr(int value);
 expr_t *create_string_expr(char *value);
 expr_t *create_bool_expr(bool value);
+
 case_list_t *create_case_list(case_t *new_case);
+case_list_t *append_case_list(case_list_t *list, case_t *new_case);
+case_t *create_case(char *id, char *type, expr_t *expr);
 
 expr_list_t *create_expr_list(expr_t *expr);
 expr_list_t *append_expr_list(expr_list_t *list, expr_t *expr);
 
-case_list_t *append_case_list(case_list_t *list, case_t *new_case);
-expr_t *create_case_expr(expr_t *expr, case_list_t *cases);
-case_t *create_case(char *id, char *type, expr_t *expr);
-
 void show_class_list(class_list_t *class_list);
-void free_class_list(class_list_t *list);
-void free_feature_list(feature_list_t *list);
-void free_formal_list(formal_list_t *list);
-void free_expr_list(expr_list_t *list);
-void free_case_list(case_list_t *list);
 
 #endif // NODE_H
+
