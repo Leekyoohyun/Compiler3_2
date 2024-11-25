@@ -570,18 +570,19 @@ char *yytext;
  * 이 프로그램은 한양대학교 ERICA 컴퓨터학부 학생을 위한 교육용으로 제작되었다.
  * 한양대학교 ERICA 학생이 아닌 자는 이 프로그램을 수정하거나 배포할 수 없다.
  * 프로그램을 수정할 경우 날짜, 학과, 학번, 이름, 수정 내용을 기록한다.
+ * 2022066017 응용물리학과 이규현
  */
 #define YY_NO_INPUT 1
-#line 9 "cool.l"
+#line 10 "cool.l"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include "node.h"
 #include "cool.tab.h"
-#line 582 "lex.yy.c"
+#line 583 "lex.yy.c"
 
-#line 584 "lex.yy.c"
+#line 585 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -798,10 +799,10 @@ YY_DECL
 		}
 
 	{
-#line 26 "cool.l"
+#line 27 "cool.l"
 
 
-#line 804 "lex.yy.c"
+#line 805 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -870,169 +871,169 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "cool.l"
+#line 29 "cool.l"
 { BEGIN(COMMENT); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 29 "cool.l"
+#line 30 "cool.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 30 "cool.l"
+#line 31 "cool.l"
 /* Skip */;
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 31 "cool.l"
+#line 32 "cool.l"
 /* Skip */;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 33 "cool.l"
+#line 34 "cool.l"
 /* SKIP */
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 34 "cool.l"
+#line 35 "cool.l"
 /* skip */
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 35 "cool.l"
+#line 36 "cool.l"
 /* skip */
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 37 "cool.l"
+#line 38 "cool.l"
 { return CLASS; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 38 "cool.l"
+#line 39 "cool.l"
 { return INHERITS; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 40 "cool.l"
+#line 41 "cool.l"
 { return IF; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 41 "cool.l"
+#line 42 "cool.l"
 { return IF; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 42 "cool.l"
+#line 43 "cool.l"
 { return THEN; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 43 "cool.l"
+#line 44 "cool.l"
 { return ELSE; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 44 "cool.l"
+#line 45 "cool.l"
 { return ELSE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 45 "cool.l"
+#line 46 "cool.l"
 { return FI; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 46 "cool.l"
+#line 47 "cool.l"
 { return WHILE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 47 "cool.l"
+#line 48 "cool.l"
 { return LOOP; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 48 "cool.l"
+#line 49 "cool.l"
 { return POOL; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 49 "cool.l"
+#line 50 "cool.l"
 { return LET; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 50 "cool.l"
+#line 51 "cool.l"
 { return IN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 51 "cool.l"
+#line 52 "cool.l"
 { return CASE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 52 "cool.l"
+#line 53 "cool.l"
 { return OF; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 53 "cool.l"
+#line 54 "cool.l"
 { return ESAC; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 54 "cool.l"
+#line 55 "cool.l"
 { return NEW; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 55 "cool.l"
+#line 56 "cool.l"
 { return ISVOID; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 56 "cool.l"
+#line 57 "cool.l"
 { return TRUE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 57 "cool.l"
+#line 58 "cool.l"
 { return FALSE; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 58 "cool.l"
+#line 59 "cool.l"
 { return NOT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 60 "cool.l"
+#line 61 "cool.l"
 { return TYPE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 62 "cool.l"
+#line 63 "cool.l"
 {
     return ID;
 }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 66 "cool.l"
+#line 67 "cool.l"
 {
     return INTEGER;
 }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 70 "cool.l"
+#line 71 "cool.l"
 {
     /* 큰따옴표를 제외하고 문자열을 처리 */
     char *str = strdup(yytext + 1);  /* 처음 큰따옴표 제거하고 복사 */
@@ -1043,110 +1044,110 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 78 "cool.l"
+#line 79 "cool.l"
 { return '('; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 79 "cool.l"
+#line 80 "cool.l"
 { return ')'; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 80 "cool.l"
+#line 81 "cool.l"
 { return '{'; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 81 "cool.l"
+#line 82 "cool.l"
 { return '}'; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 82 "cool.l"
+#line 83 "cool.l"
 { return LTE; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 83 "cool.l"
+#line 84 "cool.l"
 { return ASSIGN; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 84 "cool.l"
+#line 85 "cool.l"
 { return '<'; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 85 "cool.l"
+#line 86 "cool.l"
 { return DARROW; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 86 "cool.l"
+#line 87 "cool.l"
 { return '='; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 87 "cool.l"
+#line 88 "cool.l"
 { return ','; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 88 "cool.l"
+#line 89 "cool.l"
 { return ';'; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 89 "cool.l"
+#line 90 "cool.l"
 { return ':'; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 90 "cool.l"
+#line 91 "cool.l"
 { return '.'; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 91 "cool.l"
+#line 92 "cool.l"
 { return '+'; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 92 "cool.l"
+#line 93 "cool.l"
 { return '-'; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 93 "cool.l"
+#line 94 "cool.l"
 { return '*'; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 94 "cool.l"
+#line 95 "cool.l"
 { return '/'; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 95 "cool.l"
+#line 96 "cool.l"
 { return '~'; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 96 "cool.l"
+#line 97 "cool.l"
 { return '@'; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 97 "cool.l"
+#line 98 "cool.l"
 { fprintf(stderr, "Skip unknown character %s in line %d\n", yytext, yylineno); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 99 "cool.l"
+#line 100 "cool.l"
 ECHO;
 	YY_BREAK
-#line 1149 "lex.yy.c"
+#line 1150 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENT):
 case YY_STATE_EOF(S_LINE_COMMENT):
@@ -2124,7 +2125,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 99 "cool.l"
-
-
+#line 100 "cool.l"
 

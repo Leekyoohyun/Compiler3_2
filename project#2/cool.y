@@ -3,7 +3,7 @@
  * 이 프로그램은 한양대학교 ERICA 컴퓨터학부 학생을 위한 교육용으로 제작되었다.
  * 한양대학교 ERICA 학생이 아닌 자는 이 프로그램을 수정하거나 배포할 수 없다.
  * 프로그램을 수정할 경우 날짜, 학과, 학번, 이름, 수정 내용을 기록한다.
- * 이규현 11/25 11:20
+ * 응용물리학과 2022066017 이규현
  */
 %{
 #include <stdio.h>
@@ -63,6 +63,7 @@ class_list: class_list class { $$ = append_class_list($1, $2); }
           | class { $$ = create_class_list($1); }
           | error ';' {
                 yyerror("Error in class definition, skipping.");
+                yyerrok; // 에러 복구
                 $$ = NULL;
           }
     ;
@@ -71,10 +72,7 @@ class: CLASS TYPE '{' feature_list '}' ';'
     { $$ = create_class($2, NULL, $4); }
     | CLASS TYPE INHERITS TYPE '{' feature_list '}' ';'
     { $$ = create_class($2, $4, $6); }
-    | error {
-        yyerror("Invalid class syntax.");
-        $$ = NULL;
-    }
+
     ;
 
 feature_list: feature_list feature { $$ = append_feature_list($1, $2); }
@@ -130,23 +128,42 @@ case_list: case_list ID ':' TYPE DARROW expr ';'
 
 %%
 
-void yyerror(char const *s) {
+void yyerror(char const *s)
+{
+    /*
+     * 오류의 개수를 누적한다.
+     */
     ++num_errors;
+    /*
+     * 문법 오류가 발생한 줄번호와 관련된 토큰을 출력한다.
+     */
     if (yychar > 0)
-        fprintf(stderr, "%s in line %d at \"%s\"\n", s, yylineno, yytext);
-
+        printf("%s in line %d at \"%s\"\n", s, yylineno, yytext);
+    else
+        printf("%s in line %d (unexpected EOF)\n", s, yylineno);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
+    /*
+     * 스캔할 COOL 파일을 연다. 파일명이 없으면 표준입력이 사용된다.
+     */
     if (argc > 1)
-        if (!(yyin = fopen(argv[1], "r"))) {
-            fprintf(stderr, "Error: Cannot open file %s\n", argv[1]);
-            return 1;
+        if (!(yyin = fopen(argv[1],"r"))) {
+            printf("\"%s\"는 잘못된 파일 경로입니다.\n", argv[1]);
+            exit(1);
         }
+    /*
+     * 구문분석을 위해 수행한다.
+     */
     yyparse();
+    /*
+     * 오류의 개수를 출력한다.
+     */
     if (num_errors > 0)
-        fprintf(stderr, "%d error(s) found\n", num_errors);
+         printf("%d error(s) found\n", num_errors);
     else
-        show_class_list(program);
+         show_class_list(program);
+
     return 0;
 }

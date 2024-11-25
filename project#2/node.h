@@ -1,6 +1,9 @@
 /*
  * Copyright(c) 2020-2024 All rights reserved by Heekuck Oh.
  * 이 프로그램은 한양대학교 ERICA 컴퓨터학부 학생을 위한 교육용으로 제작되었다.
+ * 한양대학교 ERICA 학생이 아닌 자는 이 프로그램을 수정하거나 배포할 수 없다.
+ * 프로그램을 수정할 경우 날짜, 학과, 학번, 이름, 수정 내용을 기록한다.
+ * 2022066017 응용물리학과 이규현
  */
 #ifndef NODE_H
 #define NODE_H
