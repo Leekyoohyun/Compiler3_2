@@ -139,4 +139,3 @@ expr_list_t *append_expr_list(expr_list_t *list, expr_t *expr);
 void show_class_list(class_list_t *class_list);
 
 #endif // NODE_H
-

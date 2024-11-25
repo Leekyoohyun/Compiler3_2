@@ -17,11 +17,18 @@
 %x COMMENT
 %x S_LINE_COMMENT
 
+
+
 NEWLINE     (\r\n|\n)
 WHITESPACE  [ \t]+
 DASHCOMMENT --.*\n
 
 %%
+
+"(*"           { BEGIN(COMMENT); }
+<COMMENT>"*)"  { BEGIN(INITIAL); }
+<COMMENT>.     /* Skip */;
+<COMMENT>\n    /* Skip */;
 
 {WHITESPACE}    /* SKIP */
 {NEWLINE}       /* skip */
@@ -90,3 +97,4 @@ DASHCOMMENT --.*\n
 .       { fprintf(stderr, "Skip unknown character %s in line %d\n", yytext, yylineno); }
 
 %%
+
